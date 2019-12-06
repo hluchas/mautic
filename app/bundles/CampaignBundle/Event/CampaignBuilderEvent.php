@@ -110,27 +110,6 @@ class CampaignBuilderEvent extends Event
     }
 
     /**
-     * @deprecated - use addDecision instead
-     *
-     * @param       $key
-     * @param array $decision
-     */
-    public function addLeadDecision($key, array $decision)
-    {
-        $this->addDecision($key, $decision);
-    }
-
-    /**
-     * @deprecated - use getDecisions instead
-     *
-     * @return array
-     */
-    public function getLeadDecisions()
-    {
-        return $this->getDecisions();
-    }
-
-    /**
      * Add an lead condition to the list of available conditions.
      *
      * @param string $key   a unique identifier; it is recommended that it be namespaced i.e. lead.mytrigger
@@ -177,27 +156,6 @@ class CampaignBuilderEvent extends Event
     public function getConditions()
     {
         return $this->sort('conditions');
-    }
-
-    /**
-     * @deprecated use addCondition instead
-     *
-     * @param       $key
-     * @param array $event
-     */
-    public function addLeadCondition($key, array $event)
-    {
-        $this->addCondition($key, $event);
-    }
-
-    /**
-     * @deprecated use getConditions() instead
-     *
-     * @return array
-     */
-    public function getLeadConditions()
-    {
-        return $this->getConditions();
     }
 
     /**
