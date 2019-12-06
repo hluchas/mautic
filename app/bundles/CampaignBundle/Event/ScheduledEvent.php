@@ -13,8 +13,9 @@ namespace Mautic\CampaignBundle\Event;
 
 use Mautic\CampaignBundle\Entity\LeadEventLog;
 use Mautic\CampaignBundle\EventCollector\Accessor\Event\AbstractEventAccessor;
+use Symfony\Component\EventDispatcher\Event;
 
-class ScheduledEvent extends CampaignScheduledEvent
+class ScheduledEvent extends Event
 {
     use ContextTrait;
 
@@ -34,8 +35,6 @@ class ScheduledEvent extends CampaignScheduledEvent
     private $isReschedule;
 
     /**
-     * ScheduledEvent constructor.
-     *
      * @param AbstractEventAccessor $config
      * @param LeadEventLog          $log
      * @param bool                  $isReschedule
@@ -45,19 +44,6 @@ class ScheduledEvent extends CampaignScheduledEvent
         $this->eventConfig  = $config;
         $this->eventLog     = $log;
         $this->isReschedule = $isReschedule;
-
-        // @deprecated support for pre 2.13.0; to be removed in 3.0
-        parent::__construct(
-            [
-                'eventSettings'   => $config->getConfig(),
-                'eventDetails'    => null,
-                'event'           => $log->getEvent(),
-                'lead'            => $log->getLead(),
-                'systemTriggered' => true,
-                'dateScheduled'   => $log->getTriggerDate(),
-            ],
-            $log
-        );
     }
 
     /**
