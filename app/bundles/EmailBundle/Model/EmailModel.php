@@ -36,6 +36,7 @@ use Mautic\EmailBundle\Event\EmailBuilderEvent;
 use Mautic\EmailBundle\Event\EmailEvent;
 use Mautic\EmailBundle\Event\EmailOpenEvent;
 use Mautic\EmailBundle\Event\EmailSendEvent;
+use Mautic\EmailBundle\Exception\EmailCouldNotBeSentException;
 use Mautic\EmailBundle\Exception\FailedToSendToContactException;
 use Mautic\EmailBundle\Form\Type\EmailType;
 use Mautic\EmailBundle\Helper\MailHelper;
@@ -1573,10 +1574,16 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface
                 if ($saveStat) {
                     $saveEntities[] = $mailer->createEmailStat(false, $toAddress);
                 }
+            }
 
-                // Clear CC and BCC to do not duplicate the send several times
-                $mailer->setCc([]);
-                $mailer->setBcc([]);
+            // If this is the first message, flush the queue. This process clears the cc and bcc.
+            if (true === $firstMail) {
+                try {
+                    $this->flushQueue($mailer);
+                } catch (EmailCouldNotBeSentException $e) {
+                    $errors[] = $e->getMessage();
+                }
+                $firstMail = false;
             }
         }
 
@@ -1627,6 +1634,21 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface
             $errorArray = $mailer->getErrors();
             unset($errorArray['failures']);
             $errors[] = implode('; ', $errorArray);
+            // If this is the first message, flush the queue. This process clears the cc and bcc.
+            if (true === $firstMail) {
+                try {
+                    $this->flushQueue($mailer);
+                } catch (EmailCouldNotBeSentException $e) {
+                    $errors[] = $e->getMessage();
+                }
+                $firstMail = false;
+            }
+        }
+
+        try {
+            $this->flushQueue($mailer);
+        } catch (EmailCouldNotBeSentException $e) {
+            $errors[] = $e->getMessage();
         }
 
         if (isset($saveEntities)) {
@@ -1637,6 +1659,20 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface
         unset($mailer);
 
         return $errors;
+    }
+
+    /**
+     * @throws EmailCouldNotBeSentException
+     */
+    private function flushQueue(MailHelper $mailer): void
+    {
+        $a = $mailer->flushQueue();
+        if (!$a) {
+            $errorArray = $mailer->getErrors();
+            unset($errorArray['failures']);
+
+            throw new EmailCouldNotBeSentException(implode('; ', $errorArray));
+        }
     }
 
     /**

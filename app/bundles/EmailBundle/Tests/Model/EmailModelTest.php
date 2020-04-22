@@ -42,6 +42,7 @@ use Mautic\LeadBundle\Tracker\ContactTracker;
 use Mautic\LeadBundle\Tracker\DeviceTracker;
 use Mautic\PageBundle\Entity\RedirectRepository;
 use Mautic\PageBundle\Model\TrackableModel;
+use Mautic\UserBundle\Entity\User;
 use Mautic\UserBundle\Model\UserModel;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\HttpFoundation\Request;
@@ -56,7 +57,16 @@ class EmailModelTest extends \PHPUnit\Framework\TestCase
     private $trackableModel;
     private $userModel;
     private $translator;
+
+    /**
+     * @var MockObject|Email
+     */
     private $emailEntity;
+
+    /**
+     * @var MockObject|User
+     */
+    private $userEntity;
     private $entityManager;
     private $statRepository;
     private $emailRepository;
