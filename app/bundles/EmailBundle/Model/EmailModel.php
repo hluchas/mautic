@@ -1666,8 +1666,7 @@ class EmailModel extends FormModel implements AjaxLookupModelInterface
      */
     private function flushQueue(MailHelper $mailer): void
     {
-        $a = $mailer->flushQueue();
-        if (!$a) {
+        if (!$mailer->flushQueue()) {
             $errorArray = $mailer->getErrors();
             unset($errorArray['failures']);
 
