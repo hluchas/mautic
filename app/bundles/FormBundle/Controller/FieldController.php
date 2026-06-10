@@ -130,12 +130,12 @@ class FieldController extends CommonFormController
 
                     // Add field before the submit button
                     if (count($fields)) {
-                        $submitKey = null;
+                        $submitKey   = null;
                         $submitField = null;
 
                         foreach ($fields as $key => $field) {
                             if (isset($field['type']) && 'button' === $field['type']) {
-                                $submitKey = $key;
+                                $submitKey   = $key;
                                 $submitField = $field;
                                 break;
                             }
@@ -144,7 +144,7 @@ class FieldController extends CommonFormController
                         if ($submitKey) {
                             // Remove submit button, add new field, re-add submit button at the end
                             unset($fields[$submitKey]);
-                            $fields[$keyId] = $formField;
+                            $fields[$keyId]     = $formField;
                             $fields[$submitKey] = $submitField;
                         } else {
                             $fields[$keyId] = $formField;
