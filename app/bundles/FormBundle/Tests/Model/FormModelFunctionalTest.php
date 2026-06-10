@@ -22,7 +22,8 @@ class FormModelFunctionalTest extends MauticMysqlTestCase
         /** @var FormModel $formModel */
         $formModel = static::getContainer()->get('mautic.form.model.form');
 
-        $parentKey     = 'mautic_parent';
+        // Parent session key must contain 'new' so FormConditionalSubscriber resolves it to a persisted field ID.
+        $parentKey     = 'new_mautic_parent';
         $sessionFields = [
             $parentKey => [
                 'id'         => $parentKey,

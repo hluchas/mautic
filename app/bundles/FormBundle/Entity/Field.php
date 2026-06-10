@@ -162,6 +162,11 @@ class Field
     private $mappedField;
 
     /**
+     * Set by FormModel::deleteEntities() for post_delete events (not persisted).
+     */
+    public ?int $deletedId = null;
+
+    /**
      * Reset properties on clone.
      */
     public function __clone()
